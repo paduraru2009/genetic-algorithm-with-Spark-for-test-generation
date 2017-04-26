@@ -1,2 +1,9 @@
-# genetic-algorithm-with-Spark-for-test-generation
-A genetic algorithm implemented using Spark for test generation
+### Run on Spark with dummy data 
+
+    $ ./run_example
+     
+### Run probabilities 
+
+    $ python probabilities.py 
+
+
