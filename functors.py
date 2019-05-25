@@ -35,6 +35,9 @@ class EvalFunctors:
 
         # Read the size of the returned buffer and data
         receivedOutputSize = tracer.stdout.read(4)
+        if receivedOutputSize == b'Payl':
+                print("Payload not found!")
+                exit(1)
 
         # TODO CPADURARU mega hack until bitdef team solves the problem mentioned on symexec Slack channel
         # Process crashes and i need to respawn it from time to time :)
@@ -43,7 +46,7 @@ class EvalFunctors:
             return self.getTrace(inputString)
 
         streamSize = struct.unpack("I", receivedOutputSize)[0]
-        #print(streamSize)
+        # print(streamSize)
         streamData = tracer.stdout.read(streamSize)
 
         return streamData, streamSize
@@ -73,6 +76,10 @@ class EvalFunctors:
             cost            = entry[4]
             jumpType        = entry[5]
             entrySize       = entry[6]
+            jumpInstruction = entry[7]
+            nInstructions   = entry[8]
+            nextModule      = entry[9]
+            nextoffset      = entry[10]
 
             streamPos += entrySize
 

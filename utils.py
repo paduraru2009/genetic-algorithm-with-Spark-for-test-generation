@@ -83,7 +83,7 @@ def readParams():
 
     # HACK : parameter shouldn't be optional
     if args.testProgramName is None:
-        Params.testProgramName          = "libhttp-parser.so"
+        Params.testProgramName          = "libfmi.so" # "libhttp-parser.so"
     else:
         Params.testProgramName          = args.testProgramName
 
@@ -120,12 +120,16 @@ def readParams():
     #  Set template for a input entry
     entryType_TestName              = 0x0010
     entryType_Module                = 0x00B0
+    entryType_NextModule            = 0x00C0
     entryType_Offset                = 0x00BB
-    EntryTemplate                   = namedtuple("t", "hF hS oF oS TN TM TO") # header format, header size, offset format, offset size
+    entryType_InputUsage            = 0x00AA
+    entryType_NextOffset            = 0x00A0
+    EntryTemplate                   = namedtuple("t", "hF hS oF oS TN TM TO TIU TNM TNO") # header format, header size, offset format, offset size
     headerFtm                       = 'h h'
-    offsetFtm                       = 'I h h'
+    offsetFtm                       = 'I h h h h'
     Params.entryTemplate            = EntryTemplate(hF = headerFtm, hS = struct.calcsize(headerFtm), oF = offsetFtm, oS = struct.calcsize(offsetFtm),
-                                                    TN = entryType_TestName, TM = entryType_Module, TO = entryType_Offset)
+                                                    TN = entryType_TestName, TM = entryType_Module, TO = entryType_Offset, TIU = entryType_InputUsage,
+                                                    TNO = entryType_NextOffset, TNM = entryType_NextModule)
 
     if Params.populationSize < 2:
         print("EROR: Please set a valid population size >=2" )
@@ -153,7 +157,7 @@ def getBlockOffsetEntryFromLine(line):
     return moduleName, int(wordsOnLine["offset"], 10)
 
 def writeToProcess(var, process, numBytes, doFlush=True):
-    process.stdin.write(var.to_bytes(numBytes, 'little'))
+    process.stdin.write(var.to_bytes(numBytes, sys.byteorder))
     process.stdin.flush()
 
 def createTracerCmd(Params):
@@ -183,6 +187,10 @@ def getNextEntryFromStream(dataStream, streamPos, entryTemplate):
     offset = 0
     cost = 0
     jumpType = 0
+    jumpInstruction = 0
+    nInstructions = 0
+    nextoffset = 0
+    nextModule = ''
 
     if type == entryTemplate.TN or type == entryTemplate.TM: # test name or module name type
         # do something
@@ -190,19 +198,33 @@ def getNextEntryFromStream(dataStream, streamPos, entryTemplate):
 
         entrySize = headerSize + length
         streamPos += length
+    elif type == entryTemplate.TNM: # next module
+        nextModule = dataStream[streamPos: streamPos + length]
+        entrySize = headerSize + length
+        streamPos += length
     elif type == entryTemplate.TO: # pffset type
         offsetInfoRes   = struct.unpack_from(offsetInfoFmt, dataStream, streamPos)
         offset          = offsetInfoRes[0]
         cost            = offsetInfoRes[1]
         jumpType        = offsetInfoRes[2]
+        jumpInstruction = offsetInfoRes[3]
+        nInstructions   = offsetInfoRes[4]
 
-        entrySize = headerSize + offsetInfoSize
-        streamPos += offsetInfoSize
+        entrySize = headerSize + length
+        streamPos += length
+    elif type == entryTemplate.TNO:
+        nextoffset = struct.unpack_from('I', dataStream, streamPos)
+        entrySize = headerSize + length
+        streamPos += length
+    elif type == entryTemplate.TIU:
+        print("Input usage: Not supported")
+        exit(1)
     else:
         assert 1 == 0 # Unknown type !!!
 
 
-    return (type, length, nameString, offset, cost, jumpType, entrySize)
+    return (type, length, nameString, offset, cost, jumpType, entrySize,
+            jumpInstruction, nInstructions, nextModule, nextoffset)
 
 
 class ParamsType:
