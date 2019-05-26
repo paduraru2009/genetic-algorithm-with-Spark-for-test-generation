@@ -23,7 +23,13 @@ mkdir $GENETIC
 cd $GENETIC
 
 git clone git@github.com:paduraru2009/genetic-algorithm-with-Spark-for-test-generation.git
+
+# Remove unused files
 cd genetic-algorithm-with-Spark-for-test-generation/
+find ./ -maxdepth 1 ! -name .gitkeep -delete
+
+cd ~/
+fi
 
 if [ "$WRITE_IN_BASHRC" = "bashrc"  ]; then
 printf "${BLUE}Step 4: Add enviroment variables\n${NC}"
