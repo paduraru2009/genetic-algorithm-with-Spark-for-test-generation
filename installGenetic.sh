@@ -26,7 +26,7 @@ git clone https://github.com/paduraru2009/genetic-algorithm-with-Spark-for-test-
 
 # Remove unused files
 cd genetic-algorithm-with-Spark-for-test-generation/
-find ./ -maxdepth 1 ! -name .gitkeep -delete
+find ./ -name .gitkeep -delete
 
 cd ~/
 fi
