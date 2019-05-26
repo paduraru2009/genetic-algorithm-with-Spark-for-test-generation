@@ -22,7 +22,7 @@ if [ -d "$GENETIC" ]; then rm -rf $GENETIC; fi
 mkdir $GENETIC
 cd $GENETIC
 
-git clone git@github.com:paduraru2009/genetic-algorithm-with-Spark-for-test-generation.git
+git clone https://github.com/paduraru2009/genetic-algorithm-with-Spark-for-test-generation.git 
 
 # Remove unused files
 cd genetic-algorithm-with-Spark-for-test-generation/
