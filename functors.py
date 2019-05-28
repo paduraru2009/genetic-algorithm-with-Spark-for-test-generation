@@ -2,6 +2,8 @@ import sys
 import subprocess
 import utils
 import struct
+import signal
+import os
 
 # Functors used for evaluation purposes
 class EvalFunctors:
@@ -36,13 +38,22 @@ class EvalFunctors:
         # Read the size of the returned buffer and data
         receivedOutputSize = tracer.stdout.read(4)
         if receivedOutputSize == b'Payl':
-                print("Payload not found!")
-                exit(1)
+            print("Payload not found!")
+            exit(1)
 
-        # TODO CPADURARU mega hack until bitdef team solves the problem mentioned on symexec Slack channel
-        # Process crashes and i need to respawn it from time to time :)
+        # If process has crashed, saved the input and restart tracer
         if len(receivedOutputSize) == 0:
+            # Wait for process returncode
+            tracer.wait()
+
+            # Save crash info
+            self.saveCrashData(tracer, inputString)
+
+            # Restart tracer process
             self.parentWorker.updateTracerProcess()
+
+            # Change the input-string !!!
+            inputString[0] = 255
             return self.getTrace(inputString)
 
         streamSize = struct.unpack("I", receivedOutputSize)[0]
@@ -50,6 +61,39 @@ class EvalFunctors:
         streamData = tracer.stdout.read(streamSize)
 
         return streamData, streamSize
+
+    def saveCrashData(self, tracerProcess, inputString):
+        from utils import logsFullPath
+        error_type = {
+            signal.SIGHUP: 'hup',
+            signal.SIGINT: 'int',
+            signal.SIGQUIT: 'quit',
+            signal.SIGILL: 'ill',
+            signal.SIGTRAP: 'trap',
+            signal.SIGABRT: 'abrt',
+            signal.SIGBUS: 'bus',
+            signal.SIGFPE: 'fpe',
+            signal.SIGUSR1: 'usr1',
+            signal.SIGSEGV: 'segv',
+            signal.SIGUSR2: 'usr2',
+            signal.SIGPIPE: 'pipe',
+            signal.SIGALRM: 'alrm',
+            signal.SIGTERM: 'term'
+        }
+
+        signalCode = -tracerProcess.returncode
+        folder = logsFullPath + '/crash/' + error_type[signalCode]
+
+        # Create folder if it doesn't exist
+        os.makedirs(folder, exist_ok=True)
+
+        # Create new file and save the input that caused the crash
+        from uuid import uuid4
+        file_name = error_type[signalCode] + '-' + str(uuid4())
+
+        with open(folder + '/' + file_name + '.bin', 'wb') as f:
+            f.write(bytearray(inputString))
+
 
     def processDataStream(self, dataStream, streamSize):
         hashForEdges = set()  # We don't count an edge if it appears twice
