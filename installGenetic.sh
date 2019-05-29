@@ -35,5 +35,7 @@ if [ "$WRITE_IN_BASHRC" = "bashrc"  ]; then
 printf "${BLUE}Step 4: Add enviroment variables\n${NC}"
 
 echo "export SIMPLETRACERPATH=/usr/local/bin/river.tracer" >> ~/.bashrc
+cd ~/genetic/genetic-algorithm-with-Spark-for-test-generation/
+mkdir -p logs/generation0
 echo "export SIMPLETRACERLOGSPATH=$PWD/logs" >> ~/.bashrc
 fi

@@ -55,6 +55,7 @@ def readParams():
     parser.add_argument("--master", help="master of execution. By default is 'local' machine")
     parser.add_argument("--executorMemory", help="num gigabytes of ram memory that you allow spark to use on executor machines. by default we are using 1 gigabyte", type=int)
     parser.add_argument("--appName", help="name of the application - used for tracking purposes. by default is 'myapp'")
+    parser.add_argument("--logsPath", help="The place where logs will be saved")
     args = parser.parse_args()
 
     Params = ParamsType
@@ -136,11 +137,14 @@ def readParams():
         sys.exit(1)
 
     global logsFullPath
+    logsFullPath = args.logsPath
+    '''
     try:
         logsFullPath = os.environ["SIMPLETRACERLOGSPATH"]
     except KeyError:
         print("ERROR: Please set the environment variable SIMPLETRACERLOGSPATH")
         sys.exit(1)
+    '''
 
     return Params
 

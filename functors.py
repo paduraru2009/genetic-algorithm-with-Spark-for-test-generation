@@ -81,6 +81,9 @@ class EvalFunctors:
         }
 
         signalCode = -tracerProcess.returncode
+        
+        if logsFullPath == "":
+            logsFullPath = '/home/boc/genetic-algorithm-with-Spark-for-test-generation/logs' 
         folder = logsFullPath + '/crash/' + error_type[signalCode]
 
         # Create folder if it doesn't exist
