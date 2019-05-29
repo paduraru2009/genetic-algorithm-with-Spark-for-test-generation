@@ -52,9 +52,8 @@ class EvalFunctors:
             # Restart tracer process
             self.parentWorker.updateTracerProcess()
 
-            # Change the input-string !!!
-            inputString[0] = 255
-            return self.getTrace(inputString)
+            # Interesting inputString
+            return None, 0
 
         streamSize = struct.unpack("I", receivedOutputSize)[0]
         # print(streamSize)

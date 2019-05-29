@@ -24,9 +24,11 @@ def generateNewTestsFolder(path, listOfTests, evalFunctor):
         streamData, streamSize = evalFunctor.getTrace(test)
 
         # write Trace		
-        outTrace = open(path + "/trace.simple.out_" + str(testcaseIndex), "wb")
-        outTrace.write(streamData)  # because the first 4 bytes contain the size
-        outTrace.close()
+        # If streamData is None it means that a crash has occured and it has been saved somewhere else
+        if streamData:
+            outTrace = open(path + "/trace.simple.out_" + str(testcaseIndex), "wb")
+            outTrace.write(streamData)  # because the first 4 bytes contain the size
+            outTrace.close()
         testcaseIndex += 1
 
 def createSimpleTracerProcesses(outListOfProcesses, Params):
