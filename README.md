@@ -2,7 +2,7 @@
     Must have RIVER and Simpletracer already installed (more info: https://github.com/AGAPIA/river)
 
     cd ~/
-    wget https://github.com/paduraru2009/genetic-algorithm-with-Spark-for-test-generation/blob/master/installGenetic.sh
+    wget https://raw.githubusercontent.com/paduraru2009/genetic-algorithm-with-Spark-for-test-generation/master/installGenetic.sh
     sh installGenetic.sh clean bashrc
 
     Restart terminal and test
