@@ -4,6 +4,8 @@ import utils
 import struct
 import signal
 import os
+import time
+import threading
 
 # Functors used for evaluation purposes
 class EvalFunctors:
@@ -34,6 +36,18 @@ class EvalFunctors:
         utils.writeToProcess(1, tracer, 1, False) # Wake up process and give it a task payload
         tracer.stdin.write(bytearray(inputString))
         tracer.stdin.flush()
+
+        # Hangs: creates a background timeout thread that 
+        # will send a halt signal if it's taking too long
+        timeout = 1
+
+        def timeoutCallback(tracer, timeout):
+            time.sleep(timeout)
+            tracer.send_signal(signal.SIGHUP)
+        
+        timeoutThread = threading.Thread(target=timeoutCallback, args=(tracer, timeout))
+        timeoutThread.daemon = True # run in the background
+        timeoutThread.start()
 
         # Read the size of the returned buffer and data
         receivedOutputSize = tracer.stdout.read(4)

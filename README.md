@@ -9,6 +9,11 @@
         cd ~/genetic/genetic-algorithm-with-Spark-for-test-generation/
         python3 main.py
 
+### Testing
+
+    $ python main.py --logsPath $SIMPLETRACERLOGSPATH   # Running locally
+    $ sh ./test.sh                                      # Running on Spark
+
 ### Run on Spark with dummy data 
 
     $ ./run_example
