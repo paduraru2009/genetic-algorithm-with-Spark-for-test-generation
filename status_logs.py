@@ -8,7 +8,7 @@ def tab_indent(times):
         tabs += '\t'
     return tabs
 
-def print_files(root, folder, files, indent, files_cutoff=10, text_cutoff=14, binary_cutoff=20,visited=set()):
+def print_files(root, folder, files, indent, files_cutoff=10, text_cutoff=50, binary_cutoff=20,visited=set()):
     files = files[:files_cutoff]
     for f in files:
         if f in visited:
