@@ -6,7 +6,6 @@
     sh installGenetic.sh clean bashrc
 
     Restart terminal and test
-        cd ~/genetic/genetic-algorithm-with-Spark-for-test-generation/
 
 ### Testing
 

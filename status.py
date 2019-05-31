@@ -25,7 +25,7 @@ def print_info(logs_folder):
     generations = { key : value for key, value in stats.items() if 'generation' in key}
 
     print('Current generations:')
-    for generation in sorted(generations.keys()):
+    for generation in sorted(generations.keys(), key=lambda s: str(len(s))+s):
         print('\t', generation, 'contains', generations[generation], 'individuals')
 
     if 'crash' in stats:
