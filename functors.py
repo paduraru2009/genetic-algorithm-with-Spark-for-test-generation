@@ -105,7 +105,12 @@ class EvalFunctors:
 
         # Create new file and save the input that caused the crash
         from uuid import uuid4
-        file_name = error_type[signalCode] + '-' + str(uuid4())
+        from datetime import datetime
+
+        time = datetime.now()
+        time_str = "%d-%d-%d->%d-%d-%d" % (time.day, time.month, time.year,
+                                           time.hour, time.minute, time.second)
+        file_name = error_type[signalCode] + '-' + time_str + '-' + str(uuid4())[:8]
 
         with open(folder + '/' + file_name + '.bin', 'wb') as f:
             f.write(bytearray(inputString))

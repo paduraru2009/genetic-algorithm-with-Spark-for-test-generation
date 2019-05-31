@@ -46,6 +46,7 @@ def updateFromFolder(folderPath, entryTemplate):
     entryType_Module                = entryTemplate.TM
     entryType_Offset                = entryTemplate.TO
 
+    os.makedirs(folderPath, exist_ok=True)
     for filename in os.listdir(folderPath):
         fileDescriptor = open(folderPath + "/" + filename , "rb")
         fileDescriptor.seek(0, os.SEEK_END)
