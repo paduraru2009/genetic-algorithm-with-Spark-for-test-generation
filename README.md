@@ -19,7 +19,7 @@
 
 ### Viewing binary files that crashed
 
-    $ python3 status_logs $SIMPLETRACERLOGSPATH
+    $ python3 status_logs.py $SIMPLETRACERLOGSPATH
 
 ### Run on Spark with dummy data 
 
