@@ -170,11 +170,12 @@ def getEdgeProbability(vertex1, vertex2):
 def main():
     separator = "+++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
-    utils.readParams()
+    params = utils.readParams()
+    entryTemplate = params.entryTemplate
 
     # Test 1
     inputFilePath_initial = utils.getFolderPathFromId(0)
-    updateFromFolder(inputFilePath_initial)
+    updateFromFolder(inputFilePath_initial, entryTemplate)
 
     # input file path hardcoded in getEdgeProbability()
     #print (Probability)
